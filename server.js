@@ -14,10 +14,16 @@ npm i -D nodemon concurrently
 nodemon - allow us to keep watching our server
 concurrently - allow us to run our backend and frontend at the same time
 */
-
 const express = require('express');
+const connectDB = require('./config/db');
 
 const app = express();
+
+// Connect Database
+connectDB();
+
+// Init Middleware
+app.use(express.json({extended: false}));
 
 // adding a route / endpoint
 // we use res.json b/c we're making a json api
