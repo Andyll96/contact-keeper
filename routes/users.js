@@ -26,35 +26,47 @@ router.post('/', [
     const {name, email, password} = req.body;
 
     try {
+        // will search the database for another user with the same email address
         let user = await User.findOne({email: email});
 
+        // if it finds a existing user with the same email address
         if(user){
             return res.status(400).json({msg: 'User already exists'});
         }
 
+        // otherwise create a new user
         user = new User({
             name,
             email,
             password
         });
 
+        // refer to old notes on security
         const salt = await bcrypt.genSalt(10);
-
+        // hash the password with the salt
         user.password = await bcrypt.hash(password, salt);
-
+        // Save comes from Mongoose
         await user.save();
 
         // res.send('User saved');
+        // the object that is sent back to the client with the token
         const payload = {
             user: {
+                // this id is added in by mongodb
                 id: user.id
             }
         }
 
+        // console.log(payload);
+
+        // to generate a token we have to sign it
+        // the secret shouldn't be put directly in the file, keep it in default.json
         jwt.sign(payload, config.get('jwtSecret'), {
+            // this object is your options
             // 3600 secs = 1 hour
             expiresIn: 3600
         }, (err, token) => {
+            // token is given by the sign function
             if (err) throw err;
             res.json({token});
             

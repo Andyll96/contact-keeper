@@ -36,6 +36,6 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contacts', require('./routes/contacts'));
 
 // this will look for an environment variable first which will be used in production
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5007;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
