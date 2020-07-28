@@ -11,11 +11,19 @@ const User = require('../models/User');
 // @desc    Get logged in user
 // @access  Private
 // the '/' refers to /api/auth, as defined in server.js
-router.get('/', [
+router.get('/',  (req, res) => {
+    res.send('Get logged in user');
+});
+
+// @route   POST api/auth
+// @desc    Auth user and get token
+// @access  Public
+// the '/' refers to /api/auth, as defined in server.js
+router.post('/',[
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is requried').exists()
 ], async (req, res) => {
-    // res.send('Get logged in user');
+    // res.send('Log in user');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -60,14 +68,6 @@ router.get('/', [
         console.error(err.message);
         res.status(500).send('Server Error');
     }
-});
-
-// @route   POST api/auth
-// @desc    Auth user and get token
-// @access  Public
-// the '/' refers to /api/auth, as defined in server.js
-router.post('/', (req, res) => {
-    res.send('Log in user');
 });
 
 // we have to export the router or it won't work
