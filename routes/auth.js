@@ -3,16 +3,24 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const auth = require('../middleware/auth');
 const { check, validationResult } = require('express-validator');
 
 const User = require('../models/User');
 
 // @route   GET api/auth
 // @desc    Get logged in user
-// @access  Private
+// @access  Private (meaning this is a protected route using middle ware)
 // the '/' refers to /api/auth, as defined in server.js
-router.get('/',  (req, res) => {
-    res.send('Get logged in user');
+router.get('/', auth, async (req, res) => {
+    // res.send('Get logged in user');
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
 });
 
 // @route   POST api/auth
