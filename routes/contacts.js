@@ -17,6 +17,7 @@ router.get('/', auth, async (req, res) => {
     try {
         // -1 date, the most recent
         const contacts = await Contact.find({ user: req.user.id }).sort({ date: -1 });
+        // respond with list of contacts
         res.json(contacts);
     } catch (err) {
         console.error(err.message);
@@ -48,7 +49,7 @@ router.post('/', [auth, [
             user: req.user.id
         });
 
-        cosnt contact = await newContact.save();
+        const contact = await newContact.save();
 
         res.json(contact);
     } catch (err) {
