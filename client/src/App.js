@@ -10,7 +10,6 @@ import './App.css';
 const App = () => {
   return (
     <ContactState>
-
       <Router>
         <Fragment>
           <Navbar />
