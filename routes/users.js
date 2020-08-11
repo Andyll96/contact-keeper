@@ -68,8 +68,9 @@ router.post('/', [
         }, (err, token) => {
             // token is given by the sign function
             if (err) throw err;
-            res.json({token});
-            
+
+            // response with the token
+            res.json({token})
         });
 
     } catch (err) {
