@@ -97,7 +97,7 @@ router.put('/:id', auth, async (req, res) => {
 // @access  Private
 // the '/' refers to /api/contacts, as defined in server.js
 // we use :id b/c we have to describe what contact we want to update or delete
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => 
     // res.send('Delete contact');
     try {
         let contact = await Contact.findById(req.params.id);
