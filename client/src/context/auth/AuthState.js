@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import axios from 'axios';
 import AuthContext from './authContext';
 import authReducer from './authReducer';
 import {
@@ -24,14 +25,50 @@ const AuthState = props => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     // Load User
+    const loadUser = () =>{
+        console.log('Load User');
+    }
 
     // Register User
+    const register = async formData => {
+        // since we're making a post request we need the content-type header
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        try {
+            // we have the proxy value in package.json, so we don't have to type out http://localhost:5000
+            const res = await axios.post('/api/users', formData, config);
+
+            dispatch({
+                type: REGISTER_SUCCESS,
+                payload: res.data
+            });
+        } catch (err) {
+                dispatch({
+                    type: REGISTER_FAIL,
+                    payload: err.response.data.msg
+                });
+            
+        }
+    };
 
     // Login User
-
+    const login = () =>{
+        console.log('Login');
+    }
     // Logout
-
-    // Clear Errors
+        const logout = () =>{
+            console.log('Logout');
+        }
+        
+        // Clear Errors
+            const clearErrors = () =>{
+                // console.log('Clear Errors');
+                dispatch({type: CLEAR_ERRORS});
+            }
 
     return (
         <AuthContext.Provider
@@ -41,6 +78,11 @@ const AuthState = props => {
                loading: state.loading,
                user: state.user,
                error: state.error,
+               register,
+               loadUser,
+               login,
+               logout,
+               clearErrors
             }}>
             {props.children}
         </AuthContext.Provider>
