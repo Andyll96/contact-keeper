@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 import AuthContext from './authContext';
+import setAuthToken from '../../utils/setAuthToken'
 import authReducer from './authReducer';
 import {
     REGISTER_SUCCESS,
@@ -25,8 +26,18 @@ const AuthState = props => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     // Load User
-    const loadUser = () =>{
-        console.log('Load User');
+    const loadUser = async () => {
+        if (localStorage.token) {
+            setAuthToken(localStorage.token);
+        }
+
+        try {
+            const res = await axios.get('/api/auth');
+
+            dispatch({ type: USER_LOADED, payload: res.data });
+        } catch (err) {
+            dispatch({type: AUTH_ERROR});
+        }
     }
 
     // Register User
@@ -46,43 +57,44 @@ const AuthState = props => {
                 type: REGISTER_SUCCESS,
                 payload: res.data
             });
+            loadUser();
         } catch (err) {
-                dispatch({
-                    type: REGISTER_FAIL,
-                    payload: err.response.data.msg
-                });
-            
+            dispatch({
+                type: REGISTER_FAIL,
+                payload: err.response.data.msg
+            });
+
         }
     };
 
     // Login User
-    const login = () =>{
+    const login = () => {
         console.log('Login');
     }
     // Logout
-        const logout = () =>{
-            console.log('Logout');
-        }
-        
-        // Clear Errors
-            const clearErrors = () =>{
-                // console.log('Clear Errors');
-                dispatch({type: CLEAR_ERRORS});
-            }
+    const logout = () => {
+        console.log('Logout');
+    }
+
+    // Clear Errors
+    const clearErrors = () => {
+        // console.log('Clear Errors');
+        dispatch({ type: CLEAR_ERRORS });
+    }
 
     return (
         <AuthContext.Provider
             value={{
-               token: state.token,
-               isAuthenticated: state.isAuthenticated,
-               loading: state.loading,
-               user: state.user,
-               error: state.error,
-               register,
-               loadUser,
-               login,
-               logout,
-               clearErrors
+                token: state.token,
+                isAuthenticated: state.isAuthenticated,
+                loading: state.loading,
+                user: state.user,
+                error: state.error,
+                register,
+                loadUser,
+                login,
+                logout,
+                clearErrors
             }}>
             {props.children}
         </AuthContext.Provider>
